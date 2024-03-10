@@ -86,7 +86,6 @@ const StoryIndex = () => {
                       variant="contained"
                       color="primary"
                       size="small"
-                      startIcon={<VisibilityIcon />}
                       onClick={() => handleShowDetails(story.id)}
                     >
                       SHOW
