@@ -35,7 +35,7 @@ const StoryIndex = () => {
 
   const getRoom = async () => {
     try {
-      const createStoryResponse = await axios.post('http://localhost:3000/stories');
+      const createStoryResponse = await axios.post(process.env.API_SERVER_HOST + '/stories');
       console.log(createStoryResponse.data.id)
       window.location.href = "/rooms/${createdRoomId}";
      
