@@ -31,13 +31,12 @@ const StoryIndex = () => {
   const router = useRouter();
   const [stories, setStories] = useState<Story[]>([]);
   const [selectedStoryId, setSelectedStoryId] = useState<bigint | null>(null);
-  const [roomId, setRoomId] = useState<number | null>(null);
 
   const getRoom = async () => {
     try {
-      const createStoryResponse = await axios.post(process.env.NEXT_PUBLIC_API_SERVER_HOST + '/stories');
+      const createStoryResponse = await axios.post(`${process.env.NEXT_PUBLIC_API_SERVER_HOST}/stories`);
       console.log(createStoryResponse.data.id)
-      window.location.href = "/rooms/${createdRoomId}";
+      window.location.href = `/rooms/${createStoryResponse.data.id}`;
      
     } catch (error) {
       console.error('Error fetching data:', error);
