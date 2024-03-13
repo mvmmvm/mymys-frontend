@@ -1,26 +1,12 @@
 "use client";
 
-import { useState } from "react";  // 新しく追加
-import {
-  TableContainer,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-  Button,
-  Typography,
-  Box,
-  Modal,
-  Container
-} from "@mui/material";
+import { useState } from "react";
+import { Box, Container } from "@mui/material";
 import DarkButton from "../../../../dark_button";
 import axios from "axios";
-import { Suspense, useEffect } from "react";
-import { useParams } from "next/navigation";
+import { useEffect } from "react";
 import Link from "next/link"
-import { ClassNames } from "@emotion/react";
-import { Margin } from "@mui/icons-material";
+import { parseFormData } from "parse-nested-form-data";
 
 
 type Player = {
@@ -30,6 +16,7 @@ type Player = {
 
 const RoomShow = ({ params }: { params: { id: string } }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [errorOccured, setError] = useState(false);
   const [players, setPlayers] = useState<Player[]>([]);
   const id = params.id;
 
@@ -39,17 +26,22 @@ const RoomShow = ({ params }: { params: { id: string } }) => {
       .then((players) => setPlayers(players));
   }, []);
 
-  const getPlayers = async () => {
+  const getPlayers = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault(); 
     setIsLoading(true)
     removeOldHtmlAndShowLoading();
+    const formData = new FormData(event.currentTarget);
+
+    const formPlayers = parseFormData(formData);
+    console.log(formPlayers)
     try {
-      const response = await axios.patch(`${process.env.NEXT_PUBLIC_API_SERVER_HOST}/stories/${id}`);
+      const response = await axios.patch(`${process.env.NEXT_PUBLIC_API_SERVER_HOST}/stories/${id}`, { players: formPlayers });
       const players = response.data; 
       updateHtmlWithData(players);
       console.log(response.data);
     } catch (error) {
       console.error('Error fetching data:', error);
-      throw error;
+      setError(true)
     } finally {
       setIsLoading(false);
     }
@@ -77,7 +69,13 @@ const RoomShow = ({ params }: { params: { id: string } }) => {
           </h2>
         </div>
       )}
-
+      {errorOccured && (
+        <div>
+        <h2 className="text-base font-semibold leading-7 text-gray-900">
+          生成エラーが起きました。もう一度やり直してください。
+        </h2>
+      </div>
+      )}
       {players && players.length > 0 ? (
         <Box
           display="flex"
@@ -101,7 +99,7 @@ const RoomShow = ({ params }: { params: { id: string } }) => {
         </Box>
       ) : (
     <Container>
-      <form id="form">
+      <form id="form" onSubmit={getPlayers} >
       <div className="space-y-12">
         <div className="pb-12">
           <h2 className="text-base font-semibold leading-7 text-gray-900">遊ぶ方のお名前を入力してください。</h2>
@@ -114,8 +112,8 @@ const RoomShow = ({ params }: { params: { id: string } }) => {
               <div className="mt-2">
                 <input
                   type="text"
-                  name="name1"
-                  id="name1"
+                  name="player[0].name"
+                  id="player[0].name"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
@@ -127,8 +125,8 @@ const RoomShow = ({ params }: { params: { id: string } }) => {
               </label>
               <div className="mt-2">
                 <select
-                  id="gender1"
-                  name="gender1"
+                  id="player[0].gender"
+                  name="player[0].gender"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
                 >
                   <option>男性</option>
@@ -147,8 +145,8 @@ const RoomShow = ({ params }: { params: { id: string } }) => {
               <div className="mt-2">
                 <input
                   type="text"
-                  name="name1"
-                  id="name1"
+                  name="player[1].name"
+                  id="player[1].name"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
@@ -160,8 +158,8 @@ const RoomShow = ({ params }: { params: { id: string } }) => {
               </label>
               <div className="mt-2">
                 <select
-                  id="gender1"
-                  name="gender1"
+                  id="player[1].gender"
+                  name="player[1].gender"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
                 >
                   <option>男性</option>
@@ -179,8 +177,8 @@ const RoomShow = ({ params }: { params: { id: string } }) => {
               <div className="mt-2">
                 <input
                   type="text"
-                  name="name1"
-                  id="name1"
+                  name="player[2].name"
+                  id="player[2].name"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
@@ -192,8 +190,8 @@ const RoomShow = ({ params }: { params: { id: string } }) => {
               </label>
               <div className="mt-2">
                 <select
-                  id="gender1"
-                  name="gender1"
+                  id="player[2].gender"
+                  name="player[2].gender"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
                 >
                   <option>男性</option>
@@ -202,7 +200,37 @@ const RoomShow = ({ params }: { params: { id: string } }) => {
               </div>
             </div>
           </div>
+          <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+            <div className="sm:col-span-3">
+              <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-gray-900">
+                被害者の名前
+              </label>
+              <div className="mt-2">
+                <input
+                  type="text"
+                  name="victim"
+                  id="victim"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                />
+              </div>
+            </div>
 
+            <div className="sm:col-span-3">
+              <label htmlFor="country" className="block text-sm font-medium leading-6 text-gray-900">
+                被害者の性別
+              </label>
+              <div className="mt-2">
+                <select
+                  id="v_gender"
+                  name="v_gender"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                >
+                  <option>男性</option>
+                  <option>女性</option>
+                </select>
+              </div>
+            </div>
+          </div>
 
         </div>
 
@@ -211,7 +239,6 @@ const RoomShow = ({ params }: { params: { id: string } }) => {
         <DarkButton
           type="submit"
           className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          onClick={() => getPlayers()}
         >
                 作成する
               </DarkButton>

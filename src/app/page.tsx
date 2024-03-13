@@ -57,10 +57,13 @@ const StoryIndex = () => {
           オリジナルのマダミスで遊ぼう
         </h3>
         <p className="mt-3 max-w-3xl text-lg text-gray-600">
-        "さあ、皆さん落ち着きましょう"
+        "まあ、皆さん落ち着きましょう。"
         </p>
         <p className="mt-3 max-w-3xl text-lg text-gray-600">
-        ”お互い警察に知られたくないようなこともあるでしょうし”
+        "どうやら犯人は私たちの中にいるようですね。"
+        </p>
+        <p className="mt-3 max-w-3xl text-lg text-gray-600">
+        ”お互い警察に知られたくないようなこともあるでしょうし...”
         </p>
         <p className="mt-3 max-w-3xl text-lg text-gray-600">
         "どうでしょう？犯人を私たちで見つけませんか？"
@@ -83,7 +86,7 @@ const StoryIndex = () => {
         <div className="mt-3 max-w-3xl text-lg text-gray-600">みんなのストーリー</div>
         {stories && (
           <ul role="list" className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {stories.map((story) => (
+            {stories && stories.length > 0 && stories.map((story) => (
               <li key={story.name} className="col-span-1 divide-y divide-gray-200 rounded-lg bg-[#111827] shadow">
                 <div className="flex flex-col h-full">
                   <div className="flex-1 p-6">
