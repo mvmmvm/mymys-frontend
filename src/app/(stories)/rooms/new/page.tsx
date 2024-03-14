@@ -28,6 +28,7 @@ const RoomNew = () => {
   const [story, setStory] = useState<Story | null>(null);
   const [name, setName] = useState('');
   const [victim, setVictim] = useState('');
+  const [notFound, setNotFound] = useState(false);
 
   // useEffect(() => {
   //   fetch(`${process.env.NEXT_PUBLIC_API_SERVER_HOST}/rooms/${id}/players`)
@@ -41,25 +42,18 @@ const RoomNew = () => {
       setCharacters(response.data.characters);
       setStory(response.data.story);
     } catch (err) {
+      setNotFound(true)
+      let list_element = document.getElementById("loading");
+      if (list_element) {
+        list_element.remove();
+      }
       console.log(err);
     }
   };
 
   useEffect(() => {
-    fetchCharacters();
+    fetchCharacters();    
   }, []);
-
-  const getPlayers = async () => {
-    try {
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_SERVER_HOST}/stories/${story_id}/rooms`);
-      const room = response.data;
-      
-      window.location.href = `/rooms/${room.id}`;
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      throw error;
-    }
-  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -174,10 +168,15 @@ const RoomNew = () => {
         </Container>
      ) : (
       <div>
-        <h2 className="text-base font-semibold leading-7 text-gray-900">
+        <h2 className="text-base font-semibold leading-7 text-gray-900" id="loading">
           ストーリーを取得中です...
         </h2>
       </div>
+     )}
+     {notFound && (
+      <h2 className="text-base font-semibold leading-7 text-gray-900">
+        ストーリーが見つかりませんでした。
+      </h2>
      )}
     </>
   );

@@ -14,7 +14,6 @@ type Story = {
 };
 
 const StoryIndex = () => {
-  const [selectedStoryId, setSelectedStoryId] = useState<bigint | null>(null);
   const [stories, setStories] = useState<Story[]>([]);
   // const selectedStory = stories.find((story) => story.id === selectedStoryId);
 
