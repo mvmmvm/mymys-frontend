@@ -9,3 +9,8 @@
   -webkit-line-clamp: 3; /* 表示したい行数を指定 */
   max-height: 4.5rem; /* 表示したい高さを指定 */
 }
+
+.my-form-control-disabled {
+  pointer-events: none;
+  display:block;
+}
