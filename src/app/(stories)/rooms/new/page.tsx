@@ -29,12 +29,7 @@ const RoomNew = () => {
   const [name, setName] = useState('');
   const [victim, setVictim] = useState('');
   const [notFound, setNotFound] = useState(false);
-
-  // useEffect(() => {
-  //   fetch(`${process.env.NEXT_PUBLIC_API_SERVER_HOST}/rooms/${id}/players`)
-  //     .then((res) => res.json())
-  //     .then((players) => setPlayers(players));
-  // }, []);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const fetchCharacters = async () => {
     try {
@@ -47,7 +42,6 @@ const RoomNew = () => {
       if (list_element) {
         list_element.remove();
       }
-      console.log(err);
     }
   };
 
@@ -55,20 +49,47 @@ const RoomNew = () => {
     fetchCharacters();    
   }, []);
 
+  function hasDuplicates<T>(array: T[]): boolean {
+    return new Set(array).size !== array.length;
+  }
+
+  const validate = (players: any) => {
+    let names = [];
+    const victim = players.victim
+    names.push(victim)
+    players.player.forEach((player: any) => {
+      if (player.name) {
+        names.push(player.name);
+      }
+    });
+    for (let name of names) {
+      if ( name.length === 0 ) {
+        setErrorMessage("全ての名前を入力してください。");
+        return false;
+      }
+      if ( hasDuplicates(names) ) {
+        setErrorMessage("重複する名前があります。");
+        return false;
+      }
+      setErrorMessage(null);
+      return true;
+    }
+  }
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const formPlayers = parseFormData(formData);
-    try {
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_SERVER_HOST}/stories/${story_id}/rooms`);
-      const room = response.data;
-      await axios.post(`${process.env.NEXT_PUBLIC_API_SERVER_HOST}/rooms/${room.id}/players`, {players: formPlayers});
-      console.log(response)
-      window.location.href = `/rooms/${room.id}`;
-      
-    } catch (error) {
-      console.error(error);
-      throw error;
+    if (validate(formPlayers)) {
+      try {
+        const response = await axios.post(`${process.env.NEXT_PUBLIC_API_SERVER_HOST}/stories/${story_id}/rooms`);
+        const room = response.data;
+        await axios.post(`${process.env.NEXT_PUBLIC_API_SERVER_HOST}/rooms/${room.id}/players`, {players: formPlayers});
+        router.push(`/rooms/${room.id}`)
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
     }
   };
 
@@ -76,6 +97,9 @@ const RoomNew = () => {
     <>
     {characters && story && characters.length > 0 ? (
       <Container>
+        {errorMessage && (
+          <div className="mt-2 text-sm text-red-600">{errorMessage}</div>
+        )}
         <form id="form" onSubmit={handleSubmit}>
         <div className="space-y-12">
           <div className="pb-12">
@@ -107,8 +131,8 @@ const RoomNew = () => {
                     name={`player[${index}].gender`}
                     id={`player[${index}].gender`}
                     value={character.gender}
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
-                    disabled
+                    className="block my-form-control-disabled w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                    
                   >
                     <option>男性</option>
                     <option>女性</option>
@@ -143,8 +167,8 @@ const RoomNew = () => {
                   <select
                     id="v_gender"
                     name="v_gender"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
-                    disabled
+                    className="my-form-control-disabled block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+            
                     value={story.v_gender}
                   >
                     <option>男性</option>
