@@ -1,14 +1,12 @@
 "use client";
-
-import * as React from 'react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState, useMemo } from 'react';
+import ActionCable from 'actioncable';
 import Accordion from '@mui/material/Accordion';
 import AccordionActions from '@mui/material/AccordionActions';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import Button from '@mui/material/Button';
-import { Container } from "@mui/material";
-import { useEffect, useState } from 'react';
 import DarkButton from '@/dark_button';
 
 type Character = {
@@ -40,26 +38,79 @@ type Story = {
 }
 
 const PlayerShow = ({ params }: { params: { id: string } }) => {
-  const id = params.id;
   const [character, setCharacter] = useState<Character | null>(null);
   const [story, setStory] = useState<Story | null>(null);
   const [stuffs, setStuffs] = useState([])
-
+  const [solveCount, setSolveCount] = useState(0);
+  const [roomId, setRoomId] = useState<number | null>(null);
+  const [solved, setSolved] = useState(false);
+  const router = useRouter();
+  const { id } = params;
+  const [subscription, setSubscription] = useState<ActionCable.Channel>();
+  const cable = useMemo(() => ActionCable.createConsumer(`ws://${process.env.NEXT_PUBLIC_API_SERVER_HOST?.replace('http://','')}/cable`), []);
+  
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_API_SERVER_HOST}/players/${id}`)
       .then((res) => res.json())
-      .then(({ character, story, stuffs }) => {
+      .then(({ character, story, stuffs, room_id, solve_count, solved}) => {
+        console.log(solve_count)
         setStory(story);
         setCharacter(character);
         setStuffs(stuffs);
+        setRoomId(room_id);
+        setSolveCount(solve_count)
+        setSolved(solved)
       });
-  }, []);
+  }, [roomId, id]);
 
+  useEffect(() => {
+    if (roomId && id) {
+      const sub = cable.subscriptions.create({ channel: "RoomChannel", room_id: roomId }, {
+        received: (data) => {
+          if (data.type === 'solve') {
+            setSolveCount(data.solve_count);
+            if (data.player_id === id) {
+              removeButtons();
+            }
+          }
+        }
+      });
+      setSubscription(sub);
+      
+      return () => {
+        sub.unsubscribe();
+      };
+    }
+  }, [cable, roomId, id]);
+
+  const handleSend = () => {
+    subscription?.perform('solve', { room_id: roomId, player_id: id});
+    removeButtons();
+  };
+
+  const removeButtons = () => {
+    let button = document.getElementById("button_solve");
+    let text_alert = document.getElementById("text_alert");
+    if (button) {
+      button.remove()
+    }
+    if (text_alert) {
+      text_alert.remove()
+    }
+  };
+
+  useEffect(() => {
+    if (solveCount === 3) {
+      router.push(`/players/${id}/solve`);
+    }
+  }, [solveCount, router]);
 
     return (
       <>
         {story && character && (
           <div>
+           
+            
           {character.is_criminal ? (
             <Accordion defaultExpanded className="bg-red-100 p-4 rounded-lg" >
               <AccordionSummary
@@ -126,6 +177,7 @@ const PlayerShow = ({ params }: { params: { id: string } }) => {
                 </div>
                 <div className="mt-4">
                   <h4 className="text-md font-semibold text-gray-700">被害者</h4>
+                  <p className="text-gray-600">性別: {story.victim}</p>
                   <p className="text-gray-600">性別: {story.v_gender}</p>
                   <p className="text-gray-600">性格: {story.v_personality}</p>
                   <p className="text-gray-600">職業: {story.v_job}</p>
@@ -178,8 +230,21 @@ const PlayerShow = ({ params }: { params: { id: string } }) => {
             </Accordion>
             <div>3. 全員が確認できたら話し合いを始めましょう。</div>
             <AccordionActions>
-              <DarkButton>解決フェーズに入る</DarkButton>
-              <div className="text-base font-semibold leading-7 text-red-900">※犯人が分かるまで押さないようにしてください。</div>
+            {!solved && (
+              <>
+              <DarkButton onClick={handleSend} id='button_solve'>解決する</DarkButton>
+              <div className="text-base font-semibold leading-7 text-red-900" id='text_alert'>
+                <p>※犯人が分かるまで押さないようにしてください。</p>
+                <p>　全員が押したら解決フェーズに入ります。</p>
+              </div>
+              </>
+            )}
+            <>
+              <div>
+                <p>{solveCount}人が解決ボタンを押しました。</p>
+                <p>全員が揃ったら回答を始めます。</p>
+              </div>
+            </>
             </AccordionActions>
           </div>
         )}

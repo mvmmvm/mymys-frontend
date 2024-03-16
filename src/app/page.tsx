@@ -27,7 +27,6 @@ const StoryIndex = () => {
   const getRoom = async () => {
     try {
       const createStoryResponse = await axios.post(`${process.env.NEXT_PUBLIC_API_SERVER_HOST}/stories`);
-      console.log(createStoryResponse.data.id)
       router.push(`/rooms/${createStoryResponse.data.id}`);
      
     } catch (error) {
@@ -92,7 +91,8 @@ const StoryIndex = () => {
                   <div className="flex-1 p-6">
                     <div className="flex items-center space-x-3">
                       <h3 className="truncate text-sm font-medium text-gray-500">{story.name}</h3>
-                      <span className="inline-flex flex-shrink-0 items-center rounded-full bg-green-50 px-1.5 py-0.5 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
+
+                      <span className="inline-flex flex-shrink-0 items-center rounded-full bg-red-200 px-1.5 py-0.5 text-xs font-medium text-red-800 ring-1 ring-inset ring-red-600/20">
                         {story.set}
                       </span>
                     </div>
