@@ -7,6 +7,7 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { parseFormData } from "parse-nested-form-data";
 import { useRouter } from 'next/navigation';
+import { Suspense } from 'react';
 
 type Character = {
   id: bigint
@@ -23,7 +24,7 @@ type Story = {
 const RoomNew = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const story_id = searchParams.get("story");
+  const story_id = searchParams?.get("story");
   const [characters, setCharacters] = useState<Character[]>([]);
   const [story, setStory] = useState<Story | null>(null);
   const [name, setName] = useState('');
@@ -206,4 +207,12 @@ const RoomNew = () => {
   );
 };
 
-export default RoomNew;
+const RoomNewPage = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <RoomNew />
+    </Suspense>
+  );
+};
+
+export default RoomNewPage;
