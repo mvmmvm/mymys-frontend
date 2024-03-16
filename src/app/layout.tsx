@@ -27,13 +27,11 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <AppRouterCacheProvider>
-
-            <Container fixed={true}>
-             <Header />
+          <Header />
+            <div className="mt-40"></div>
               {children}
-             <Footer />
-            </Container>   
-
+            <div className="mb-40"></div>
+          <Footer />
         </AppRouterCacheProvider>
       </body>
     </html>
