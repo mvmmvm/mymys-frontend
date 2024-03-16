@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from 'next/navigation';
 import { Button } from "@mui/material";
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import { styled } from "@mui/system";
@@ -15,7 +16,7 @@ type Story = {
 
 const StoryIndex = () => {
   const [stories, setStories] = useState<Story[]>([]);
-  // const selectedStory = stories.find((story) => story.id === selectedStoryId);
+  const router = useRouter();
 
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_API_SERVER_HOST}/stories`)
@@ -26,7 +27,7 @@ const StoryIndex = () => {
   const getRoom = async () => {
     try {
       const createStoryResponse = await axios.post(`${process.env.NEXT_PUBLIC_API_SERVER_HOST}/stories`);
-      window.location.href = `/rooms/${createStoryResponse.data.id}`;
+      router.push(`/rooms/${createStoryResponse.data.id}`);
      
     } catch (error) {
       console.error('Error fetching data:', error);
