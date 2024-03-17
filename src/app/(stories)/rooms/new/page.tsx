@@ -8,7 +8,6 @@ import { useEffect, useState } from "react";
 import { parseFormData } from "parse-nested-form-data";
 import { useRouter } from 'next/navigation';
 import { Suspense } from 'react';
-import { useDispatch } from 'react-redux';
 
 type Character = {
   id: bigint;
@@ -33,7 +32,6 @@ const RoomNew = () => {
   ]);
   const [story, setStory] = useState<Story | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const dispatch = useDispatch();
 
   const fetchCharacters = async () => {
     try {
@@ -104,9 +102,6 @@ const RoomNew = () => {
           axios.patch(`${process.env.NEXT_PUBLIC_API_SERVER_HOST}/stories/${story.id}`, { players: formPlayers, room_id: roomInit.id });
         } catch (error) {
           console.error(error);
-          if (error instanceof Error) {
-            dispatch({ type: 'SET_ERROR', payload: error.message });
-          }
         }
       }
     }

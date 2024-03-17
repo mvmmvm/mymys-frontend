@@ -6,14 +6,7 @@ import DarkButton from "../../../../dark_button";
 import axios from "axios";
 import { useEffect } from "react";
 import Link from "next/link"
-import { useSelector, useDispatch } from 'react-redux';
 import ActionCable from 'actioncable';
-
-interface RootState {
-  error: {
-    message: string | null;
-  };
-}
 
 type Player = {
   id: bigint
