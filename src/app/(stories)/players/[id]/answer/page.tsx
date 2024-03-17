@@ -75,7 +75,7 @@ const Answer = ({ params }: { params: { id: string } }) => {
   }, [index, result, showConfession]);
 
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="flex flex-col items-center justify-center align-center">
       <div className="text-2xl font-bold mb-4">結末</div>
       <div className="text-lg mb-8 text-center">
         {text}

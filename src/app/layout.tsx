@@ -23,11 +23,11 @@ export default function RootLayout({
       <body className={inter.className}>
         <AppRouterCacheProvider>
           <Header />
-          <div className="mt-40"></div>
+          <div className="mt-[90px]"></div>
           <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", minHeight: "calc(100vh - 80px)" }}>
             {children}
           </div>
-          <div className="mb-40"></div>
+          <div className="mb-[130px]"></div>
           <Footer />
         </AppRouterCacheProvider>
       </body>
