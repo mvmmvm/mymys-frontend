@@ -26,9 +26,7 @@ const StoryIndex = () => {
   
   const getRoom = async () => {
     try {
-      const createStoryResponse = await axios.post(`${process.env.NEXT_PUBLIC_API_SERVER_HOST}/stories`);
-      router.push(`/rooms/${createStoryResponse.data.id}`);
-     
+      router.replace(`/rooms/new`);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
