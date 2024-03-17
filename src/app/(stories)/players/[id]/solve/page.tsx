@@ -23,11 +23,13 @@ const Solve = ({ params }: { params: { id: string } }) => {
   const { id } = params;
   const [roomId, setRoomId] = useState<number | null>(null);
   const [subscription, setSubscription] = useState<ActionCable.Channel>();
-  const cable = useMemo(() => ActionCable.createConsumer(`ws://${process.env.NEXT_PUBLIC_API_SERVER_HOST?.replace('http://','')}/cable`), []);
   const [answerCount, setAnswerCount] = useState(0);
   const [answered, setAnswered] = useState(false);
   const [disabled, setDisabled] = useState(false);
   const router = useRouter();
+  const cable = useMemo(() => {
+    return ActionCable.createConsumer(`${process.env.NODE_ENV === 'development' ? 'ws' : 'wss'}://${process.env.NEXT_PUBLIC_API_SERVER_HOST?.replace('https://','').replace('http://','')}/cable`);
+  }, []);
 
   const setAnswer = async () => {
     const answer = {room_id: roomId, suspected: selectedPlayer}

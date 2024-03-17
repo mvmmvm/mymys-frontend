@@ -47,7 +47,7 @@ const PlayerShow = ({ params }: { params: { id: string } }) => {
   const router = useRouter();
   const { id } = params;
   const [subscription, setSubscription] = useState<ActionCable.Channel>();
-  const cable = useMemo(() => ActionCable.createConsumer(`ws://${process.env.NEXT_PUBLIC_API_SERVER_HOST?.replace('http://','')}/cable`), []);
+  const cable = useMemo(() => ActionCable.createConsumer(`wss://${process.env.NEXT_PUBLIC_API_SERVER_HOST?.replace('https://','')}/cable`), []);
   
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_API_SERVER_HOST}/players/${id}`)

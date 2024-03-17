@@ -27,7 +27,9 @@ const RoomShow = ({ params }: { params: { id: string } }) => {
   const dispatch = useDispatch();
   const [createError, setCreateError] = useState(false);
   const [subscription, setSubscription] = useState<ActionCable.Channel>();
-  const cable = useMemo(() => ActionCable.createConsumer(`ws://${process.env.NEXT_PUBLIC_API_SERVER_HOST?.replace('http://','')}/cable`), []);
+  const cable = useMemo(() => {
+    return ActionCable.createConsumer(`${process.env.NODE_ENV === 'development' ? 'ws' : 'wss'}://${process.env.NEXT_PUBLIC_API_SERVER_HOST?.replace('https://','').replace('http://','')}/cable`);
+  }, []);
 
   useEffect(() => {
     if (storyCreateError && storyCreateError.message) {
