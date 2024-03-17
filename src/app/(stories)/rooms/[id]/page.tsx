@@ -62,25 +62,35 @@ const RoomShow = ({ params }: { params: { id: string } }) => {
         </div>
       )}
       {players && players.length > 0 ? (
-        <Box
-          display="flex"
-          justifyContent="space-evenly"
-          alignItems="center"
-          flexWrap="wrap"
+        <Container
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+          }}
         >
-        <Container>
-          <h2 className="text-base font-semibold leading-7 text-gray-900">
-            このページを一緒に遊ぶ方にシェアした後、ご自分の名前を選んでください。
-          </h2>
-        </Container>
+          <Box>
+            <Container sx={{ textAlign: "center" }}>
+              <h2 className="text-base font-semibold leading-7 text-gray-900">
+                このページを一緒に遊ぶ方にシェアした後、ご自分の名前を選んでください。
+              </h2>
+            </Container>
+          </Box>
+          <Box
+            display="flex"
+            justifyContent="space-evenly"
+            alignItems="center"
+            flexWrap="wrap"
+          >
           {players.map((player) => (
-            <Link href={`/players/${player.id}`} key={player.id} className="space-y-12 m-5">
+            <Link href={`/players/${player.id}`} key={player.id} className="mx-5 my-10">
               <DarkButton size="large" style={{ width: "200px" }}>
                 {player.name}
               </DarkButton>
             </Link>
           ))}
-        </Box>
+          </Box>
+        </Container>
       ) : (
         <div>
           <h2 className="text-base font-semibold leading-7 text-gray-900">

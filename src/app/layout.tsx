@@ -1,4 +1,3 @@
-
 import Header from "./header";
 import Footer from "./footer";
 import type { Metadata } from "next";
@@ -22,15 +21,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-     
         <AppRouterCacheProvider>
           <Header />
-            <div className="mt-40"></div>
-              {children}
-            <div className="mb-40"></div>
+          <div className="mt-40"></div>
+          <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", minHeight: "calc(100vh - 80px)" }}>
+            {children}
+          </div>
+          <div className="mb-40"></div>
           <Footer />
         </AppRouterCacheProvider>
-      
       </body>
     </html>
   );

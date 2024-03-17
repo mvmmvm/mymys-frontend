@@ -29,6 +29,7 @@ const StoryIndex = () => {
       router.replace(`/rooms/new`);
     } catch (error) {
       console.error('Error fetching data:', error);
+      throw(error)
     }
   };
 

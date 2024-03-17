@@ -33,22 +33,17 @@ const RoomNew = () => {
   const [story, setStory] = useState<Story | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const fetchCharacters = async () => {
-    try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_SERVER_HOST}/stories/${story_id}/characters`);
-      setCharacters(response.data.characters);
-      setStory(response.data.story);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
-
   useEffect(() => {
-    console.log(story_id);
     if (story_id) {
       fetchCharacters();
     }
   }, []);
+
+  const fetchCharacters = async () => {
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_SERVER_HOST}/stories/${story_id}/characters`);
+    setCharacters(response.data.characters);
+    setStory(response.data.story);
+  };
 
   function hasDuplicates<T>(array: T[]): boolean {
     return new Set(array).size !== array.length;
@@ -91,6 +86,7 @@ const RoomNew = () => {
           await axios.post(`${process.env.NEXT_PUBLIC_API_SERVER_HOST}/rooms/${roomSub.id}/players`, { players: formPlayers });
         } catch (error) {
           console.error(error);
+          throw(error)
         }
       } else {
         //ストーリー・ルーム登録時（元となるストーリーがない）
@@ -102,6 +98,7 @@ const RoomNew = () => {
           axios.patch(`${process.env.NEXT_PUBLIC_API_SERVER_HOST}/stories/${story.id}`, { players: formPlayers, room_id: roomInit.id });
         } catch (error) {
           console.error(error);
+          throw(error)
         }
       }
     }
@@ -185,9 +182,9 @@ const RoomNew = () => {
                       id="v_gender"
                       name="v_gender"
                       className={`block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6 ${
-                        story?.v_gender ? "my-form-control-disabled" : ""
-                      }`}
-                      defaultValue={story?.v_gender || ""}
+                      story?.["v_gender"] ? "my-form-control-disabled" : ""
+                    }`}     
+                    {...(story ? { value: story["v_gender"] } : { defaultValue: "" })}
                     >
                       <option>男性</option>
                       <option>女性</option>

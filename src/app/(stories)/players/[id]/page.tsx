@@ -47,13 +47,14 @@ const PlayerShow = ({ params }: { params: { id: string } }) => {
   const router = useRouter();
   const { id } = params;
   const [subscription, setSubscription] = useState<ActionCable.Channel>();
-  const cable = useMemo(() => ActionCable.createConsumer(`wss://${process.env.NEXT_PUBLIC_API_SERVER_HOST?.replace('https://','')}/cable`), []);
+  const cable = useMemo(() => {
+    return ActionCable.createConsumer(`${process.env.NODE_ENV === 'development' ? 'ws' : 'wss'}://${process.env.NEXT_PUBLIC_API_SERVER_HOST?.replace('https://','').replace('http://','')}/cable`);
+  }, []);
   
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_API_SERVER_HOST}/players/${id}`)
       .then((res) => res.json())
       .then(({ character, story, stuffs, room_id, solve_count, solved}) => {
-        console.log(solve_count)
         setStory(story);
         setCharacter(character);
         setStuffs(stuffs);
@@ -108,9 +109,7 @@ const PlayerShow = ({ params }: { params: { id: string } }) => {
     return (
       <>
         {story && character && (
-          <div>
-           
-            
+          <div>    
           {character.is_criminal ? (
             <Accordion defaultExpanded className="bg-red-100 p-4 rounded-lg" >
               <AccordionSummary
@@ -177,7 +176,7 @@ const PlayerShow = ({ params }: { params: { id: string } }) => {
                 </div>
                 <div className="mt-4">
                   <h4 className="text-md font-semibold text-gray-700">被害者</h4>
-                  <p className="text-gray-600">性別: {story.victim}</p>
+                  <p className="text-gray-600">名前: {story.victim}</p>
                   <p className="text-gray-600">性別: {story.v_gender}</p>
                   <p className="text-gray-600">性格: {story.v_personality}</p>
                   <p className="text-gray-600">職業: {story.v_job}</p>
