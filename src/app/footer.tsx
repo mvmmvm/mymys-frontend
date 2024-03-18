@@ -14,6 +14,7 @@ export default function Footer() {
       </div>
       <div className="mt-8 md:mt-0 md:order-1">
         <p className="text-center text-sm text-gray-400">&copy; 2024 Mai Sato</p>
+        <p className="text-center text-sm text-gray-400">※作成にはChatGPTを使用しているので文章がおかしい場合がございますがご了承くださいますようお願いします。</p>
       </div>
     </div>
   </footer>
