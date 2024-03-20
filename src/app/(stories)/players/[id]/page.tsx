@@ -37,12 +37,17 @@ type Story = {
   confession: string;
 }
 
+type Room = {
+  id: bigint
+  victim: string
+}
+
 const PlayerShow = ({ params }: { params: { id: string } }) => {
   const [character, setCharacter] = useState<Character | null>(null);
   const [story, setStory] = useState<Story | null>(null);
   const [stuffs, setStuffs] = useState([])
   const [solveCount, setSolveCount] = useState(0);
-  const [roomId, setRoomId] = useState<number | null>(null);
+  const [room, setRoom] = useState<Room | null>(null);
   const [solved, setSolved] = useState(false);
   const router = useRouter();
   const { id } = params;
@@ -54,19 +59,19 @@ const PlayerShow = ({ params }: { params: { id: string } }) => {
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_API_SERVER_HOST}/players/${id}`)
       .then((res) => res.json())
-      .then(({ character, story, stuffs, room_id, solve_count, solved}) => {
+      .then(({ character, story, stuffs, room, solved}) => {
         setStory(story);
         setCharacter(character);
         setStuffs(stuffs);
-        setRoomId(room_id);
-        setSolveCount(solve_count)
+        setRoom(room);
+        setSolveCount(room.solve_count)
         setSolved(solved)
       });
-  }, [roomId, id]);
+  }, [room?.id, id]);
 
   useEffect(() => {
-    if (roomId && id) {
-      const sub = cable.subscriptions.create({ channel: "RoomChannel", room_id: roomId }, {
+    if (room && id) {
+      const sub = cable.subscriptions.create({ channel: "RoomChannel", room_id: room.id }, {
         received: (data) => {
           if (data.type === 'solve') {
             setSolveCount(data.solve_count);
@@ -82,10 +87,10 @@ const PlayerShow = ({ params }: { params: { id: string } }) => {
         sub.unsubscribe();
       };
     }
-  }, [cable, roomId, id]);
+  }, [cable, room?.id, id]);
 
   const handleSend = () => {
-    subscription?.perform('solve', { room_id: roomId, player_id: id});
+    subscription?.perform('solve', { room_id: room?.id, player_id: id});
     removeButtons();
   };
 
@@ -108,7 +113,7 @@ const PlayerShow = ({ params }: { params: { id: string } }) => {
 
     return (
       <>
-        {story && character && (
+        {story && character && room && (
           <div>    
           {character.is_criminal ? (
             <Accordion defaultExpanded className="bg-red-100 p-4 rounded-lg" >
@@ -176,7 +181,7 @@ const PlayerShow = ({ params }: { params: { id: string } }) => {
                 </div>
                 <div className="mt-4">
                   <h4 className="text-md font-semibold text-gray-700">被害者</h4>
-                  <p className="text-gray-600">名前: {story.victim}</p>
+                  <p className="text-gray-600">名前: {room.victim}</p>
                   <p className="text-gray-600">性別: {story.v_gender}</p>
                   <p className="text-gray-600">性格: {story.v_personality}</p>
                   <p className="text-gray-600">職業: {story.v_job}</p>

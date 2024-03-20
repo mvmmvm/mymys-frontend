@@ -20,6 +20,7 @@ const AdditionalText = styled("div")<{ delay: number }>`
 const Answer = ({ params }: { params: { id: string } }) => {
   const { id } = params;
   const [text, setText] = useState<string>("");
+  const [criminal, setCriminal] = useState<string>("");
   const [index, setIndex] = useState<number>(0);
   const [roomId, setRoomId] = useState<number | null>(null);
   const [criminalWin, setCriminalWin] = useState<boolean | null>(null);
@@ -27,7 +28,7 @@ const Answer = ({ params }: { params: { id: string } }) => {
   const [isCriminal, setIsCriminal] = useState<boolean | null>(null);
   const [showConfession, setShowConfession] = useState<boolean>(false);
   const innocent_win = "あなたたちは犯人を突き止めました。";
-  const innocent_lose = "あなたたちは犯人をこれ以上追及できませんでした。";
+  const innocent_lose = "あなたたちは犯人を突き止められませんでした。";
   const criminal_win = "あなたは追及を逃れ切りました。";
   const criminal_lose = "あなたは犯人として特定されてしまいました。";
   let result = "";
@@ -35,10 +36,11 @@ const Answer = ({ params }: { params: { id: string } }) => {
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_API_SERVER_HOST}/players/${id}/result`)
       .then((res) => res.json())
-      .then(({ room_id, is_criminal, criminal_win, confession }) => {
+      .then(({ room_id, criminal, is_criminal, criminal_win, confession }) => {
         setRoomId(room_id);
         setCriminalWin(criminal_win);
         setConfession(confession);
+        setCriminal(criminal)
         setIsCriminal(is_criminal);
       });
   }, [roomId, id]);
@@ -54,7 +56,8 @@ const Answer = ({ params }: { params: { id: string } }) => {
       result = criminal_lose;
     } else if (!criminalWin && !isCriminal) {
       result = innocent_win;
-    }    
+    }
+    result = result + `犯人は${criminal}でした。`
     if (!showConfession) {
       interval = setInterval(() => {
         setText(result.slice(0, index + 1));
