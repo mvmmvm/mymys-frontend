@@ -57,7 +57,10 @@ const Answer = ({ params }: { params: { id: string } }) => {
     } else if (!criminalWin && !isCriminal) {
       result = innocent_win;
     }
-    result = result + `犯人は${criminal}でした。`
+    if (!isCriminal) {
+      result = result + `犯人は${criminal}でした。`
+    }
+    
     if (!showConfession) {
       interval = setInterval(() => {
         setText(result.slice(0, index + 1));

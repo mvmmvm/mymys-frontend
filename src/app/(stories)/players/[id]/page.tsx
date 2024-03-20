@@ -46,6 +46,7 @@ const PlayerShow = ({ params }: { params: { id: string } }) => {
   const [character, setCharacter] = useState<Character | null>(null);
   const [story, setStory] = useState<Story | null>(null);
   const [stuffs, setStuffs] = useState([])
+  const [criminalStuff, setCriminalStuff] = useState("")
   const [solveCount, setSolveCount] = useState(0);
   const [room, setRoom] = useState<Room | null>(null);
   const [solved, setSolved] = useState(false);
@@ -59,12 +60,13 @@ const PlayerShow = ({ params }: { params: { id: string } }) => {
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_API_SERVER_HOST}/players/${id}`)
       .then((res) => res.json())
-      .then(({ character, story, stuffs, room, solved}) => {
+      .then(({ character, story, stuffs, room, criminal_stuff, solved}) => {
         setStory(story);
         setCharacter(character);
         setStuffs(stuffs);
         setRoom(room);
         setSolveCount(room.solve_count)
+        setCriminalStuff(criminal_stuff)
         setSolved(solved)
       });
   }, [room?.id, id]);
@@ -185,6 +187,7 @@ const PlayerShow = ({ params }: { params: { id: string } }) => {
                   <p className="text-gray-600">性別: {story.v_gender}</p>
                   <p className="text-gray-600">性格: {story.v_personality}</p>
                   <p className="text-gray-600">職業: {story.v_job}</p>
+                  <p className="text-red-600">被害者が最後に握っていた犯人のものと思われる証拠: {criminalStuff}</p>
                 </div>
 
               </AccordionDetails>
