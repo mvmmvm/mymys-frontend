@@ -27,7 +27,7 @@ export default function RootLayout({
           <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", minHeight: "calc(100vh - 80px)" }}>
             {children}
           </div>
-          <div className="mb-[130px]"></div>
+          <div className="mb-[185px]"></div>
           <Footer />
         </AppRouterCacheProvider>
       </body>
