@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation';
 import { Button } from "@mui/material";
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import { styled } from "@mui/system";
-import axios from "axios";
 import { useEffect, useState } from "react";
 
 type Story = {
@@ -67,7 +66,7 @@ const StoryIndex = () => {
         "どうでしょう？犯人を私たちで見つけませんか？"
         </p>
       </div>
-      <Container sx={{ margin: '8px'}}>
+      <Container sx={{ margin: '8px'}} className='flex flex-col items-center text-center'>
         <DarkButton
           variant="contained"
           color="primary"
@@ -77,11 +76,13 @@ const StoryIndex = () => {
           onClick={() => getRoom()}
         >
           物語を自動生成する！
+          
         </DarkButton>
+        <p className="text-gray-600">(3人で遊べます)</p>
       </Container>
     
       <Container sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'stretch', height: '100%', margin: '8px'}}>
-        <div className="mt-3 max-w-3xl text-lg text-gray-600">みんなのストーリー</div>
+        <div className="mt-3 max-w-3xl text-lg text-gray-600">みんなの生成したストーリー</div>
         {stories && (
           <ul role="list" className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {stories && stories.length > 0 && stories.map((story) => (
