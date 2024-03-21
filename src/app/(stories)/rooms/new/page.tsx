@@ -53,7 +53,13 @@ const RoomNew = () => {
   const validate = (players: any) => {
     let names = [];
     const victim = players.victim;
+    const set = players.set;
     const invalidNamePattern = /[^\p{L}\p{N}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Han}]/u;
+    const spacePattern = /[\s\u3000]+/;
+    if (spacePattern.test(set) || invalidNamePattern.test(set)) {
+      setErrorMessage("舞台のイメージに許可されていない文字または空白スペースが含まれています。");
+      return false;
+    }
     names.push(victim);
     players.player.forEach((player: any) => {
       if (player.name) {
@@ -69,8 +75,8 @@ const RoomNew = () => {
         setErrorMessage("重複する名前があります。");
         return false;
       }
-      if (invalidNamePattern.test(name)) {
-        setErrorMessage("名前に空白スペースや記号が含まれています。");
+      if (spacePattern.test(name) || invalidNamePattern.test(name)) {
+        setErrorMessage("名前に許可されていない文字または空白スペースが含まれています。");
         return false;
       }
     }
@@ -140,6 +146,7 @@ const RoomNew = () => {
                     ) : (
                       <>
                         舞台のイメージ（学校、海辺など）
+                        空欄の場合はランダムに作成されます。
                       </>
                     )}
                     </label>
