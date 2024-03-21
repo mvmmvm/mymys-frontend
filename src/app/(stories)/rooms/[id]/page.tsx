@@ -57,7 +57,7 @@ const RoomShow = ({ params }: { params: { id: string } }) => {
       {createError && (
         <div>
           <h2 className="text-base font-semibold leading-7 text-gray-900">
-            生成エラーが起きました。もう一度やり直してください。
+            生成エラーが起きました。再度やり直すか、多発している場合は開発者に連絡してください。
           </h2>
         </div>
       )}

@@ -19,6 +19,7 @@ type Story = {
   id: bigint;
   victim: string;
   v_gender: string;
+  set: string;
 }
 
 const RoomNew = () => {
@@ -52,6 +53,7 @@ const RoomNew = () => {
   const validate = (players: any) => {
     let names = [];
     const victim = players.victim;
+    const invalidNamePattern = /[^\p{L}\p{N}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Han}]/u;
     names.push(victim);
     players.player.forEach((player: any) => {
       if (player.name) {
@@ -65,6 +67,10 @@ const RoomNew = () => {
       }
       if (hasDuplicates(names)) {
         setErrorMessage("重複する名前があります。");
+        return false;
+      }
+      if (invalidNamePattern.test(name)) {
+        setErrorMessage("名前に空白スペースや記号が含まれています。");
         return false;
       }
     }
@@ -124,6 +130,32 @@ const RoomNew = () => {
                   <h2 className="text-base font-semibold leading-7 text-gray-900">（被害者はプレイヤーではありません）</h2>
                 </>
               )}
+              <div key="set_image_div" className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6"> 
+                  <div className="sm:col-span-3">
+                    <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-gray-900">
+                    {characters[0].name !== "" && story !== null ? (
+                      <>
+                        舞台
+                      </>
+                    ) : (
+                      <>
+                        舞台のイメージ（学校、海辺など）
+                      </>
+                    )}
+                    </label>
+                    <div className="mt-2">
+                      <input
+                        type="text"
+                        name="set"
+                        id="set"
+                        className={`block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6 ${
+                          story?.["set"] ? "my-form-control-disabled" : ""
+                        }`}
+                        {...(story ? { value: story["set"] } : { defaultValue: "" })}                
+                      />
+                    </div>
+                  </div>
+                </div>
               {characters.map((character, index) => (
                 <div key={character.id.toString()} className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                   <div className="sm:col-span-3">
@@ -182,9 +214,9 @@ const RoomNew = () => {
                       id="v_gender"
                       name="v_gender"
                       className={`block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6 ${
-                      story?.["v_gender"] ? "my-form-control-disabled" : ""
-                    }`}     
-                    {...(story ? { value: story["v_gender"] } : { defaultValue: "" })}
+                        story?.["v_gender"] ? "my-form-control-disabled" : ""
+                      }`}     
+                      {...(story ? { value: story["v_gender"] } : { defaultValue: "" })}
                     >
                       <option>男性</option>
                       <option>女性</option>
