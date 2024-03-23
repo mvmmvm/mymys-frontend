@@ -33,6 +33,7 @@ const RoomShow = ({ params }: { params: { id: string } }) => {
           if (data.type === 'story_created' || 'room_created') {
             fetchPlayers();
           } else if (data.type === 'story_create_error') {
+            console.log("error")
             setCreateError(true)
           }
         }
@@ -43,7 +44,7 @@ const RoomShow = ({ params }: { params: { id: string } }) => {
         sub.unsubscribe();
       };
     }
-  }, []);
+  }, [cable, id]);
 
   const fetchPlayers = async () => {
     const response = await axios.get(
@@ -94,8 +95,8 @@ const RoomShow = ({ params }: { params: { id: string } }) => {
       ) : !createError && (
         <div>
           <h2 className="text-base font-semibold leading-7 text-gray-900">
-            物語を準備しています...
-            最大で5分ほどかかります。
+            物語を準備しています...<br/>
+            ストーリー作成の場合最大で5分ほどかかります。
           </h2>
         </div>
       )}

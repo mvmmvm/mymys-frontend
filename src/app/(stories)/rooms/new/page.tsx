@@ -110,7 +110,6 @@ const RoomNew = () => {
           axios.patch(`${process.env.NEXT_PUBLIC_API_SERVER_HOST}/stories/${story.id}`, { players: formPlayers, room_id: roomInit.id });
         } catch (error) {
           console.error(error);
-          throw(error)
         }
       }
     }
