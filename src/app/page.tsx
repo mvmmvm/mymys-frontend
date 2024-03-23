@@ -86,7 +86,7 @@ const StoryIndex = () => {
         {stories && (
           <ul role="list" className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {stories && stories.length > 0 && stories.map((story) => (
-              <li key={story.name} className="col-span-1 divide-y divide-gray-200 rounded-lg bg-[#111827] shadow">
+              <li key={story.id} className="col-span-1 divide-y divide-gray-200 rounded-lg bg-[#111827] shadow">
                 <div className="flex flex-col h-full">
                   <div className="flex-1 p-6">
                     <div className="flex items-center space-x-3">

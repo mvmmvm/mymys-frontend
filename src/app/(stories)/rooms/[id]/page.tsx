@@ -24,13 +24,13 @@ const RoomShow = ({ params }: { params: { id: string } }) => {
 
   useEffect(() => {
     fetchPlayers();    
-  }, []);
+  }, [createError]);
 
   useEffect(() => {
     if (id) {
       const sub = cable.subscriptions.create({ channel: "RoomChannel", room_id: id }, {
         received: (data) => {
-          if (data.type === 'story_created' || 'room_created') {
+          if (data.type === 'story_created' || data.type === 'room_created') {
             fetchPlayers();
           } else if (data.type === 'story_create_error') {
             console.log("error")
@@ -47,10 +47,14 @@ const RoomShow = ({ params }: { params: { id: string } }) => {
   }, [cable, id]);
 
   const fetchPlayers = async () => {
-    const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_SERVER_HOST}/rooms/${id}/players`
-    );
-    setPlayers(response.data);   
+    try {
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_SERVER_HOST}/rooms/${id}/players`
+      );
+      setPlayers(response.data);
+    } catch(error) {
+      console.error('Error fetching data:', error);
+    }
   };
 
   return (

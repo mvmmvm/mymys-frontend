@@ -98,7 +98,6 @@ const RoomNew = () => {
           await axios.post(`${process.env.NEXT_PUBLIC_API_SERVER_HOST}/rooms/${roomSub.id}/players`, { players: formPlayers });
         } catch (error) {
           console.error(error);
-          throw(error)
         }
       } else {
         //ストーリー・ルーム登録時（元となるストーリーがない）
