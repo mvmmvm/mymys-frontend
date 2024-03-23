@@ -30,7 +30,7 @@ const RoomShow = ({ params }: { params: { id: string } }) => {
     if (id) {
       const sub = cable.subscriptions.create({ channel: "RoomChannel", room_id: id }, {
         received: (data) => {
-          if (data.type === 'story_created') {
+          if (data.type === 'story_created' || 'room_created') {
             fetchPlayers();
           } else if (data.type === 'story_create_error') {
             setCreateError(true)
