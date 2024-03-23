@@ -95,6 +95,7 @@ const RoomShow = ({ params }: { params: { id: string } }) => {
         <div>
           <h2 className="text-base font-semibold leading-7 text-gray-900">
             物語を準備しています...
+            最大で5分ほどかかります。
           </h2>
         </div>
       )}
