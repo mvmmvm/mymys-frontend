@@ -142,9 +142,6 @@ const PlayerShow = ({ params }: { params: { id: string } }) => {
 
               </div>
               </AccordionDetails> 
-              <div className="p-5 text-red-800 bg-red-200 rounded italic text-sm">
-                {story.confession}
-              </div>
             </Accordion>
           ) : (
             <Accordion defaultExpanded className="bg-blue-100 p-4 rounded-lg">
