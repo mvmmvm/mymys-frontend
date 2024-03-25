@@ -131,7 +131,7 @@ const PlayerShow = ({ params }: { params: { id: string } }) => {
               <AccordionDetails>
               <div className="text-red-800 rounded">
                 下の表向きの情報を使って他の人にバレないようにしましょう。
-                他の人物の秘密の証拠品も掴んでいます。撹乱しましょう。
+                他の人物の秘密の証拠品も掴んでいます。うまく使いましょう。
                 <div className="mt-4">
                   {stuffs && stuffs.length > 0 && (
                     stuffs.map((stuff) => (
