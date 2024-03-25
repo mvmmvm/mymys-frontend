@@ -132,8 +132,9 @@ const RoomNew = () => {
                 <>
                   <h2 className="text-base font-semibold leading-7 text-gray-900">プレイヤーのお名前と性別を入力してください。</h2>
                   <h2 className="text-base font-semibold leading-7 text-gray-900">（被害者はプレイヤーではありません）</h2>
+                  <h2 className="text-base font-semibold leading-7 text-red-600">※解読できないような内容で生成するとエラーが発生する場合があります。</h2>
                 </>
-              )}
+              )} 
               <div key="set_image_div" className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6"> 
                   <div className="sm:col-span-3">
                     <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-gray-900">
@@ -144,7 +145,7 @@ const RoomNew = () => {
                     ) : (
                       <>
                         舞台のイメージ（学校、海辺など）
-                        空欄の場合はランダムに作成されます。
+                        空欄の場合はランダムに作成されます。<br/>
                       </>
                     )}
                     </label>

@@ -149,18 +149,24 @@ const PlayerShow = ({ params }: { params: { id: string } }) => {
           <Dialog open={open} onClose={handleClose}>
             <DialogTitle>ヒント</DialogTitle>
             <DialogContent>
-              <p>犯人は自分以外の証拠品を知っています。</p>
-              <p>犯人の証拠品は全員が知っています。</p>
-              <p>以下のようなことを聞くといいでしょう<div className=""></div></p>
+              <p className='font-semibold text-red-600'>犯人は全員の証拠品を知っています。</p>
+              <p>以下のようなことを聞くといいでしょう。</p>
               <p>・「自己紹介しましょう」</p>
               <p>・「なんでXXXにいたんですか？」</p>
               <p>・「何を悩んでいたんですか？」</p>
               <p>・「被害者さんとの関係は？」</p>
               <p>・「被害者さんをどう思っていたんですか？」</p>
+              <p>・「事件直前はどこにいたんですか？」</p>
               <br/>
               <p>犯人側は下記のようなことに気をつけましょう。</p>
               <p>・他の人の証拠品からあたりをつけ、犯人として疑うなどして自分から目を逸らさせましょう。</p>
               <p>・ある程度事件前と事件後の話を合わせられるように考えましょう。</p>
+              <p>・事件直前誰かに見られている場合もあります。</p>
+              <p>・話を引き出して目撃情報と整合性がとれるように振る舞いましょう。</p>
+              <p>・あまり疑うと知りすぎていると思われるので気をつけましょう。</p>
+              <br/>
+              <p className='font-semibold'>特に状況証拠や時間的証拠はないので、一番怪しい人物を犯人と見て決めましょう。</p>
+              <p className='font-semibold'>自分の中で答えが出たら「解決する」を押してください。</p>
             </DialogContent>
             <DialogActions>
               <Button onClick={handleClose}>Close</Button>
