@@ -17,6 +17,7 @@ const RoomShow = ({ params }: { params: { id: string } }) => {
   const [players, setPlayers] = useState<Player[]>([]);
   const id = params.id;
   const [createError, setCreateError] = useState(false);
+  const [limitOverError, setLimitOverError] = useState(false);
   const [subscription, setSubscription] = useState<ActionCable.Channel>();
   const cable = useMemo(() => {
     return ActionCable.createConsumer(`${process.env.NODE_ENV === 'development' ? 'ws' : 'wss'}://${process.env.NEXT_PUBLIC_API_SERVER_HOST?.replace('https://','').replace('http://','')}/cable`);
@@ -24,7 +25,7 @@ const RoomShow = ({ params }: { params: { id: string } }) => {
 
   useEffect(() => {
     fetchPlayers();    
-  }, [createError]);
+  }, [createError, limitOverError]);
 
   useEffect(() => {
     if (id) {
@@ -33,8 +34,9 @@ const RoomShow = ({ params }: { params: { id: string } }) => {
           if (data.type === 'story_created' || data.type === 'room_created') {
             fetchPlayers();
           } else if (data.type === 'story_create_error') {
-            console.log("error")
             setCreateError(true)
+          } else if (data.type === 'limit_over') {
+            setLimitOverError(true)
           }
         }
       });
@@ -59,6 +61,14 @@ const RoomShow = ({ params }: { params: { id: string } }) => {
 
   return (
     <>
+      {limitOverError && (
+        <div>
+          <h2 className="text-base font-semibold leading-7 text-gray-900">
+            APIへのリクエスト制限に達しました。時間(最大1日)を置いてやり直してください。
+          </h2>
+        </div>
+        )
+      }
       {createError && (
         <div>
           <h2 className="text-base font-semibold leading-7 text-gray-900">
@@ -96,7 +106,7 @@ const RoomShow = ({ params }: { params: { id: string } }) => {
           ))}
           </Box>
         </Container>
-      ) : !createError && (
+      ) : !createError && !limitOverError &&(
         <div>
           <h2 className="text-base font-semibold leading-7 text-gray-900">
             物語を準備しています...<br/>
