@@ -234,7 +234,6 @@ const PlayerShow = ({ params }: { params: { id: string } }) => {
                   <p className="text-gray-600">性別: {story.v_gender}</p>
                   <p className="text-gray-600">性格: {story.v_personality}</p>
                   <p className="text-gray-600">職業: {story.v_job}</p>
-                  <p className="text-red-600">被害者が最後に握っていた犯人のものと思われる証拠: {criminalStuff}</p>
                 </div>
 
               </AccordionDetails>
