@@ -8,6 +8,9 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import DarkButton from '@/dark_button';
+import InfoIcon from '@mui/icons-material/Info';
+import { Fab, useTheme, Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
+import { useMediaQuery } from '@mui/material';
 
 type Character = {
   id: bigint
@@ -56,6 +59,17 @@ const PlayerShow = ({ params }: { params: { id: string } }) => {
   const cable = useMemo(() => {
     return ActionCable.createConsumer(`${process.env.NODE_ENV === 'development' ? 'ws' : 'wss'}://${process.env.NEXT_PUBLIC_API_SERVER_HOST?.replace('https://','').replace('http://','')}/cable`);
   }, []);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const [open, setOpen] = useState(false);
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
   
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_API_SERVER_HOST}/players/${id}`)
@@ -105,7 +119,7 @@ const PlayerShow = ({ params }: { params: { id: string } }) => {
     if (text_alert) {
       text_alert.remove()
     }
-  };
+  }; 
 
   useEffect(() => {
     if (solveCount === 3) {
@@ -116,7 +130,43 @@ const PlayerShow = ({ params }: { params: { id: string } }) => {
     return (
       <>
         {story && character && room && (
-          <div>    
+          <div>
+           <Fab 
+            variant="extended" 
+            color="primary" 
+            onClick={handleOpen}
+            style={{
+              position: 'fixed',
+              top: isMobile ? 100 : 100,
+              right: isMobile ? 16 : 32,
+              zIndex: 1000,
+              backgroundColor: '#111827'
+            }}
+          >
+            <InfoIcon sx={{ mr: 1 }} />
+            hint!
+          </Fab>
+          <Dialog open={open} onClose={handleClose}>
+            <DialogTitle>ヒント</DialogTitle>
+            <DialogContent>
+              <p>犯人は自分以外の証拠品を知っています。</p>
+              <p>犯人の証拠品は全員が知っています。</p>
+              <p>以下のようなことを聞くといいでしょう<div className=""></div></p>
+              <p>・「自己紹介しましょう」</p>
+              <p>・「なんでXXXにいたんですか？」</p>
+              <p>・「何を悩んでいたんですか？」</p>
+              <p>・「被害者さんとの関係は？」</p>
+              <p>・「被害者さんをどう思っていたんですか？」</p>
+              <br/>
+              <p>犯人側は下記のようなことに気をつけましょう。</p>
+              <p>・職業などは嘘をついた方がいい場合もあります。</p>
+              <p>・他の人の証拠品から、秘密の内容を寄せてもいいでしょう。</p>
+              <p>・目撃されていても、ある程度事件前と事件後の話を合わせられるように考えましょう。</p>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose}>Close</Button>
+            </DialogActions>
+          </Dialog>
           {character.is_criminal ? (
             <Accordion defaultExpanded className="bg-red-100 p-4 rounded-lg" >
               <AccordionSummary
@@ -184,6 +234,7 @@ const PlayerShow = ({ params }: { params: { id: string } }) => {
                   <p className="text-gray-600">性別: {story.v_gender}</p>
                   <p className="text-gray-600">性格: {story.v_personality}</p>
                   <p className="text-gray-600">職業: {story.v_job}</p>
+                  <p className="text-red-600">被害者が最後に握っていた犯人のものと思われる証拠: {criminalStuff}</p>
                 </div>
 
               </AccordionDetails>
