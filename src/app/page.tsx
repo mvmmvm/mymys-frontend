@@ -18,9 +18,13 @@ const StoryIndex = () => {
   const router = useRouter();
 
   useEffect(() => {
+    try{
     fetch(`${process.env.NEXT_PUBLIC_API_SERVER_HOST}/stories`)
       .then((res) => res.json())
       .then((stories) => setStories(stories));
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
   }, []);
   
   const getRoom = async () => {
